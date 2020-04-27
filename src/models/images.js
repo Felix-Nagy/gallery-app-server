@@ -14,8 +14,11 @@ const imageSchema = new mongoose.Schema({
             type: String,
             trim: true
         },
-        likes: {
+        upvotes: {
             type: Number
+        },
+        tags:{
+            type: String
         },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
