@@ -7,7 +7,7 @@ const router = new express.Router()
 
 
 router.post('/images', upload.single('data'), auth, async (req, res) => {
-    const buffer = await sharp(req.file.buffer).png().toBuffer()
+    const buffer = await sharp(req.file.buffer).toBuffer()
     const image = new Image({
         ...req.body,
         owner: req.user._id
