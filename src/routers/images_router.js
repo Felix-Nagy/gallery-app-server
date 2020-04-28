@@ -25,35 +25,30 @@ router.post('/images', upload.single('data'), auth, async (req, res) => {
 // GET /images?sortBy=createdAt:desc
 router.get('/images', async (req, res) => {
     const sort = {}
-
+    searchparams = {}
+    if (req.query.tags) {
+        searchparams.tags = req.query.tags
+    }
+    if (req.query.name) {
+        searchparams.name = req.query.name
+    }
 
     if (req.query.sortBy) {
         const parts = req.query.sortBy.split(':')
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
     }
     try {
-        let images;
-        if (req.query.tags) {
-             images = await Image.find({tags:req.query.tags})
-                .populate({
-                    path: 'images',
-                    limit: parseInt(req.query.limit),
-                    skip: parseInt(req.query.skip),
-                    sort
-                }).exec()
 
-        } else {
 
-            images = await Image.find({})
-                .populate({
-                    path: 'images',
-                    limit: parseInt(req.query.limit),
-                    skip: parseInt(req.query.skip),
-                    sort
-                }).exec()
-        }
+        const images = await Image.find(searchparams)
+            .populate({
+                path: 'images',
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip),
+                sort
+            }).exec()
 
-        for(index in images) {
+        for (index in images) {
             images[index].data = null;
         }
         res.send(images)
@@ -95,7 +90,7 @@ router.get('/myimages', auth, async (req, res) => {
     }
 })
 
-router.get('/images/:id',  async (req, res) => {
+router.get('/images/:id', async (req, res) => {
     const _id = req.params.id
 
     try {
@@ -117,11 +112,11 @@ router.patch('/images/:id', async (req, res) => {
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!' })
+        return res.status(400).send({error: 'Invalid updates!'})
     }
 
     try {
-        const image = await Image.findOne({ _id: req.params.id})
+        const image = await Image.findOne({_id: req.params.id})
 //, owner: req.user._id
         if (!image) {
             return res.status(404).send()
@@ -137,7 +132,7 @@ router.patch('/images/:id', async (req, res) => {
 
 router.delete('/images/:id', auth, async (req, res) => {
     try {
-        const image = await Image.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
+        const image = await Image.findOneAndDelete({_id: req.params.id, owner: req.user._id})
 
         if (!image) {
             res.status(404).send()
