@@ -111,7 +111,7 @@ router.get('/images/:id',  async (req, res) => {
     }
 })
 
-router.patch('/images/:id', auth, async (req, res) => {
+router.patch('/images/:id', async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description', 'name', 'data', 'upvotes', 'tags']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
