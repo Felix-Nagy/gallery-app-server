@@ -121,8 +121,8 @@ router.patch('/images/:id', async (req, res) => {
     }
 
     try {
-        const image = await Image.findOne({ _id: req.params.id, owner: req.user._id})
-
+        const image = await Image.findOne({ _id: req.params.id})
+//, owner: req.user._id
         if (!image) {
             return res.status(404).send()
         }
