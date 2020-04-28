@@ -32,14 +32,26 @@ router.get('/images', async (req, res) => {
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
     }
     try {
+        let images;
+        if (req.query.tags) {
+             images = await Image.find({tags:req.query.tags})
+                .populate({
+                    path: 'images',
+                    limit: parseInt(req.query.limit),
+                    skip: parseInt(req.query.skip),
+                    sort
+                }).exec()
 
-        const images = await Image.find({})
-            .populate({
-                path: 'images',
-                limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip),
-                sort
-            }).exec()
+        } else {
+
+            images = await Image.find({})
+                .populate({
+                    path: 'images',
+                    limit: parseInt(req.query.limit),
+                    skip: parseInt(req.query.skip),
+                    sort
+                }).exec()
+        }
 
         for(index in images) {
             images[index].data = null;
