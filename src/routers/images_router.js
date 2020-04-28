@@ -40,6 +40,10 @@ router.get('/images', async (req, res) => {
                 skip: parseInt(req.query.skip),
                 sort
             }).exec()
+
+        for(index in images) {
+            images[index].data = null;
+        }
         res.send(images)
 
 
@@ -79,17 +83,17 @@ router.get('/myimages', auth, async (req, res) => {
     }
 })
 
-router.get('/images/:id', auth, async (req, res) => {
+router.get('/images/:id',  async (req, res) => {
     const _id = req.params.id
 
     try {
-        const image = await Image.findOne({ _id, owner: req.user._id })
+        const image = await Image.findById({_id})
 
         if (!image) {
             return res.status(404).send()
         }
-
-        res.send(image)
+        res.set('Content-Type', 'image/jpg')
+        res.send(image.data)
     } catch (e) {
         res.status(500).send()
     }
