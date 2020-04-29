@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    likedImages: [{
+       type: String
+    }],
+
     tokens: [{
         token: {
             type: String,
